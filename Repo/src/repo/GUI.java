@@ -9,7 +9,7 @@ import java.util.TimerTask;
 public class GUI {
 	JFrame frame;
     JLabel numLabel, speedLabel;
-	JPanel gamePane, configPane, controlPanel;
+	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
     JButton continueBtn, pauseBtn;
     RPS[] items;
@@ -44,7 +44,8 @@ public class GUI {
     	tps = 30;
         int[] dir = target.getDir();
         int[] pos = target.getPos();
-        int[] targetPos = new int[] {pos[0]+(dir[0]*10), pos[1]+(dir[1]*10)};
+        int speed = 5;
+        int[] targetPos = new int[] {pos[0]+(dir[0]*speed), pos[1]+(dir[1]*speed)};
         
         if(!isValid(targetPos[0], targetPos[1])) {
         	target.setDir(new int[] {-dir[0], -dir[1]});
@@ -83,23 +84,29 @@ public class GUI {
         }
     }
 	public GUI() {
+		// the x and y lengths from the frame width/height for startPanel and gamePane so they match up
+		int panelSizeX = 80;
+		int panelSizeY = 100;
+		// the x and y positions from startPanel and gamePane
+		int panelPosX = 80;
+		int panelPosY = 50;
+		
 		// FRAME 
 		frame = new JFrame("Rock Paper Scissors Simulator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize((int) Math.round(650*1.618), 650);
 		
+		// panel that shows up at the start of the simulation
+        startPanel = new JPanel();
+        startPanel.setLayout(null);
+        startPanel.setBounds(50, 50, frame.getWidth()-panelSizeX, frame.getHeight()-panelSizeY);
+        startPanel.setBackground(Color.black);
+        
+        // ------- START PANEL COMPONENTS -----------
 		// Number slider for amount of items
-		numSlider = new JSlider();
-		// setBounds takes 4 integers, so must round and convert a double into an int
-		numSlider.setBounds((int) Math.round((650*1.618/2)-100), (int) Math.round((650/2)-40), 200, 80);
-        numSlider.setMaximum(50);
-        
-        // Button to start program
-        continueBtn = new JButton("Continue to simulation");
-        numLabel = new JLabel("Number of each item: " + numSlider.getValue());
-        numLabel.setBounds((int) Math.round((650*1.618/2)-80), (int) Math.round((650/2)-85), 160, 70);
-        
-        // Updates number of items showed to user
+		numSlider = new JSlider(1, 50, 25);
+		numSlider.setBounds(startPanel.getWidth()/2-100, startPanel.getHeight()/2, 200, 80);
+		// Updates number of items showed to user
         numSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e){
@@ -107,78 +114,103 @@ public class GUI {
             }
         });
         
+        // Button to start program
+        continueBtn = new JButton("Continue to simulation");
+        continueBtn.setBounds(startPanel.getWidth()/2-90, startPanel.getHeight()/2+100, 180, 35);
+        
+        numLabel = new JLabel("Number of each item: " + numSlider.getValue());
+        numLabel.setBounds(startPanel.getWidth()/2-80, startPanel.getHeight()/2-50, 160, 70);
+        numLabel.setForeground(Color.white);
+        
+        // --------- START PANEL END ---------------
+        
+        // panel to put configuration controls on
+        controlPanel = new JPanel();
+        controlPanel.setLayout(null);
+        controlPanel.setBackground(new Color(45, 45, 45));
+        controlPanel.setBounds(0,0,frame.getWidth(), 50);
+        
+        // ---------- CONTROL PANEL COMPONENTS ------------
+        // slider that controls the tick speed of the simulation
+        speedSlider = new JSlider(1, 100, 10);
+        speedSlider.setBounds((int) Math.round(controlPanel.getWidth()*0.75)-100, 10, 200, 30);
+        speedSlider.setBackground(controlPanel.getBackground());
+        
+        // label showing the speed of the simulation in ticks per second
+        speedLabel = new JLabel("Ticks per second: 30");
+        speedLabel.setBounds((int) Math.round(controlPanel.getWidth()*0.55)-100, 10, 200, 30);
+        speedLabel.setForeground(Color.white);
+        // creates another loop of moving the objects when changing the tick speed
+        speedSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e){
+                tps = speedSlider.getValue();
+                speedLabel.setText("Ticks per second:  " + tps);
+                System.out.println(tps);
+                if(timer != null) {
+                	timer.cancel();
+                }
+                timer = new Timer();
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                    	if(!paused) {
+                    		String type = null;
+                    		boolean allSameType = true;
+	                        for(RPS item : items){
+	                        	
+	                            move(item);
+	                            type = (type == null) ? item.getType() : type;
+	                            allSameType = (item.getType() == type) ? allSameType : false;
+	                            
+	                        }
+	                        if(allSameType) {
+	                        	paused = true;
+	                        	speedLabel.setText(type + " Wins!");
+	                        }
+	                        gamePane.revalidate();
+	                        gamePane.repaint();
+                    	}
+                    }
+                }, 0, 1000/((tps == 0) ? 30 : tps));
+            }
+        });
+        
+        // button to pause and resume the simulation
+        pauseBtn = new JButton("Pause Simulation");
+        pauseBtn.setBounds((int) Math.round(controlPanel.getWidth()*0.15)-75, (controlPanel.getHeight()/2)-15, 150, 30);
+        pauseBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		paused = !paused;
+        		pauseBtn.setText((paused) ? "Resume Simulation" : "Pause Simulation");
+        	}
+        });
+        // ---------- CONTROL PANEL END ---------------
+        
+        // panel to put simulate the RPS objects on
+        gamePane = new JPanel();
+        gamePane.setLayout(null);
+        gamePane.setBounds(50, 50, frame.getWidth()-panelSizeX, frame.getHeight()-panelSizeY);
+        gamePane.setBackground(new Color(20,20,20));
+        gamePane.setEnabled(false);
+        
         // continues to program
         continueBtn.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-            	JFrame gameFrame = new JFrame("RPS Simulator");
-                gameFrame.setSize((int) Math.round(650*1.618)+100, 750);
-                gamePane = new JPanel();
-                gamePane.setLayout(null);
-                gamePane.setBounds(50, 50, (int) Math.round(650*1.618), 650);
-                controlPanel = new JPanel();
-                controlPanel.setLayout(null);
-                controlPanel.setBackground(new Color(230, 230, 230));
-                controlPanel.setBounds(0,0,frame.getWidth(), 50);
-                pauseBtn = new JButton("Pause Simulation");
-                pauseBtn.setBounds((int) Math.round(controlPanel.getWidth()*0.15)-75, (controlPanel.getHeight()/2)-15, 150, 30);
-                pauseBtn.addActionListener(new ActionListener() {
-                	@Override
-                	public void actionPerformed(ActionEvent e) {
-                		paused = !paused;
-                		pauseBtn.setText((paused) ? "Unpause Simulation" : "Pause Simulation");
-                	}
-                });
-                speedSlider = new JSlider();
-                speedSlider.setValue(30);
-                speedSlider.setBounds((int) Math.round(controlPanel.getWidth()*0.75)-100, 10, 200, 30);
-                speedSlider.setMinimum(1);
-                speedSlider.setBackground(new Color(230, 230, 230));
-                speedLabel = new JLabel("Ticks per second: 30");
-                speedLabel.setBounds((int) Math.round(controlPanel.getWidth()*0.55)-100, 10, 200, 30);
-                speedSlider.addChangeListener(new ChangeListener() {
-                    @Override
-                    public void stateChanged(ChangeEvent e){
-                        tps = speedSlider.getValue();
-                        speedLabel.setText("Ticks per second:  " + tps);
-                        System.out.println(tps);
-                        if(timer != null) {
-                        	timer.cancel();
-                        }
-                        timer = new Timer();
-                        timer.scheduleAtFixedRate(new TimerTask() {
-                            @Override
-                            public void run() {
-                            	if(!paused) {
-                            		String type = null;
-                            		boolean allSameType = true;
-        	                        for(RPS item : items){
-        	                            //System.out.print(item.getPos)
-        	                            move(item);
-        	                            type = (type == null) ? item.getType() : type;
-        	                            allSameType = (item.getType() == type) ? allSameType : false;
-        	                            
-        	                        }
-        	                        if(allSameType) {
-        	                        	paused = true;
-        	                        	speedLabel.setText(type + " Wins!");
-        	                        }
-        	                        gamePane.revalidate();
-        	                        gamePane.repaint();
-                            	}
-                            }
-                        }, 0, 1000/((tps == 0) ? 30 : tps));
-                    }
-                });
-                controlPanel.add(speedSlider);
-                controlPanel.add(pauseBtn);
-                controlPanel.add(speedLabel);
-                gameFrame.add(gamePane);
-                gameFrame.add(controlPanel);
-                gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                
+            	// gets rid of the start panel, shows game panel with simulation
+                startPanel.setEnabled(false);
+                startPanel.setVisible(false);
+                gamePane.setEnabled(true);
+                
+                // gets value from slider
                 int numEach = numSlider.getValue();
                 items = new RPS[numEach*3];
-                //System.out.println("a");
+                
+                // initializes an equal amount of RPS objects from numSlider value
+                // sets random starting position and direction
                 for(int i = 0; i < 3; i++){
                     for(int ii = 0; ii < numEach; ii++){
                         int x = (int) Math.round(Math.random()*frame.getWidth());
@@ -195,9 +227,8 @@ public class GUI {
                         System.out.println("Placed " + item.getType());
                     }
                 }
-                //frame.setContentPane(gamePane);
-                frame.setVisible(false);
-                gameFrame.setVisible(true);
+                
+                // starts a timer and runs the simulation
                 timer = new Timer();
                 timer.scheduleAtFixedRate(new TimerTask() {
                     @Override
@@ -223,16 +254,24 @@ public class GUI {
                 }, 0, 1000/30);
             }
         });
-        continueBtn.setBounds((int) Math.round((650*1.618/2)-90), (int) Math.round((650/2)+45), 180, 35);
         
-        /*Config pane definition*/
-		configPane = new JPanel();
-		configPane.setLayout(null);
-		configPane.add(numSlider);
-        configPane.add(numLabel);
-        configPane.add(continueBtn);
+        // add components to startPanel
+        startPanel.add(numSlider);
+        startPanel.add(numLabel);
+        startPanel.add(continueBtn);
         
-		frame.setContentPane(configPane);
+        // add components to controlPanel
+        controlPanel.add(speedSlider);
+        controlPanel.add(pauseBtn);
+        controlPanel.add(speedLabel);
+        
+        // add panels to frame
+        frame.add(startPanel);
+        frame.add(gamePane);
+        frame.add(controlPanel);
+        
+        frame.revalidate();
+        frame.repaint();
 		frame.setVisible(true);
 	}
 }
