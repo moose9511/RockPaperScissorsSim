@@ -101,6 +101,9 @@ public class RPS extends JLabel {
 		direction[0] *= -1;
 		direction[1] *= -1;
 	}
-    
+    public void randDir() {
+    	direction[0] = (Math.random() > .5) ? -1:1;
+    	direction[1] = (Math.random() > .5) ? -1:1;
+    }
 	
  }
