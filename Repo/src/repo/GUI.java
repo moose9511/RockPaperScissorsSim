@@ -5,6 +5,10 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
 import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,10 +18,11 @@ public class GUI {
 	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
     JButton continueBtn, pauseBtn;
-    RPS[] items;
-    int tps;
-    boolean paused;
-    Timer timer;
+    
+    RPS[] items; // array to have all the rock paper and scissors objects in
+    int tps; // ticks per second variable, saved to by numSlider
+    boolean paused; // used to check if the simulation should be paused
+    Timer timer; // timer used to loop through frames in the simulation
     
     // checks if a circular area at a specified point is within the frame
 	public boolean isValid(int x, int y) {
@@ -93,6 +98,17 @@ public class GUI {
 		int panelPosX = 75;
 		int panelPosY = 50;
 		
+		// font initialization
+		Font board = null;
+		Font video = null;
+		try {
+			board = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/board.ttf")).deriveFont(20f);
+			video = Font.createFont(Font.TRUETYPE_FONT, new File("src/font/video.ttf"));
+		} catch (FontFormatException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		// FRAME 
 		frame = new JFrame("Rock Paper Scissors Simulator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -112,16 +128,18 @@ public class GUI {
         numSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e){
-                numLabel.setText("Number of each item: " + numSlider.getValue());
+                numLabel.setText(""+numSlider.getValue());
             }
         });
         
         // Button to start program
-        continueBtn = new JButton("Continue to simulation");
+        continueBtn = new JButton("START");
         continueBtn.setBounds(startPanel.getWidth()/2-90, startPanel.getHeight()/2+100, 180, 35);
+        continueBtn.setFont(video.deriveFont(20f));
         
-        numLabel = new JLabel("Number of each item: " + numSlider.getValue());
+        numLabel = new JLabel(""+numSlider.getValue());
         numLabel.setBounds(startPanel.getWidth()/2-80, startPanel.getHeight()/2-50, 160, 70);
+        numLabel.setFont(board);
         numLabel.setForeground(Color.white);
         // --------- START PANEL END ------------------------------------------
         
@@ -142,6 +160,7 @@ public class GUI {
         speedLabel = new JLabel("Ticks per second: 30");
         speedLabel.setBounds((int) Math.round(controlPanel.getWidth()*0.55)-100, 10, 200, 30);
         speedLabel.setForeground(Color.white);
+        speedLabel.setFont(video.deriveFont(10f));
         speedLabel.setEnabled(false);
         // creates another loop of moving the objects when changing the tick speed
         speedSlider.addChangeListener(new ChangeListener() {
