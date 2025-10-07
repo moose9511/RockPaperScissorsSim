@@ -109,6 +109,10 @@ public class GUI {
 			e.printStackTrace();
 		}
 		
+		// image initialization
+		ImageIcon startButton = new ImageIcon(getClass().getResource("/imgs/startButton.png"));
+		ImageIcon stopButton = new ImageIcon(getClass().getResource("/imgs/stopButton.png"));
+		
 		// FRAME 
 		frame = new JFrame("Rock Paper Scissors Simulator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -198,14 +202,19 @@ public class GUI {
             }
         });
         
-        // button to pause and resume the simulation
-        pauseBtn = new JButton("Pause Simulation");
-        pauseBtn.setBounds(panelPosX, (controlPanel.getHeight()/2)-15, 150, 30);
+        // button to pause and resume th
+        pauseBtn.setIcon(startButton);
+        pauseBtn = new JButton();
+        pauseBtn.setBounds(panelPosX, (controlPanel.getHeight()/2)-15, startButton.getIconWidth(), startButton.getIconHeight());
         pauseBtn.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
         		paused = !paused;
-        		pauseBtn.setText((paused) ? "Resume Simulation" : "Pause Simulation");
+
+        		if(paused) 
+        			pauseBtn.setIcon(stopButton);
+        		else
+        			pauseBtn.setIcon(startButton);
         	}
         });
         pauseBtn.setEnabled(false);
