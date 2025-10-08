@@ -228,6 +228,7 @@ public class GUI {
         speedSlider.setBounds(330, controlPanel.getHeight()/2, 200, 30);
         speedSlider.setOpaque(false);
         speedSlider.setEnabled(false);
+        speedSlider.setUI(new SliderUI(speedSlider));
         
         // label showing the speed of the simulation in ticks per second
         speedLabel = new JLabel("Ticks per second");
