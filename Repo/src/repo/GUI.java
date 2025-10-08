@@ -3,22 +3,29 @@ import javax.swing.event.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.GroupLayout.Alignment;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 public class GUI {
 	JFrame frame;
-    JLabel numLabel, speedLabel, winLabel, speedCounter, speedCounterImg, rockCounter, paperCounter, scissorsCounter;
+    JLabel numLabel, speedLabel, winLabel,  speedCounter, rockCounter, paperCounter, scissorsCounter;
+    JLabel speedCounterImg, controlPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg;
 	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
     JButton continueBtn, pauseBtn;
     
+    // image initialization
+	ImageIcon startButton = new ImageIcon(getClass().getResource("/imgs/startButton.png"));
+	ImageIcon stopButton = new ImageIcon(getClass().getResource("/imgs/stopButton.png"));
+	ImageIcon controlBack = new ImageIcon(getClass().getResource("/imgs/controlPanelBack.png"));
+	ImageIcon counterOff = new ImageIcon(getClass().getResource("/imgs/counterOff.png"));
+	ImageIcon counterOn = new ImageIcon(getClass().getResource("/imgs/counterOn.png"));
+	ImageIcon counter = new ImageIcon(getClass().getResource("/imgs/counter.png"));
+ 		
     RPS[] items; // array to have all the rock paper and scissors objects in
     int tps; // ticks per second variable, saved to by numSlider
     boolean paused; // used to check if the simulation should be paused
@@ -77,7 +84,7 @@ public class GUI {
         int[] targetPos = new int[] {pos[0]+(dir[0]*speed), pos[1]+(dir[1]*speed)};
         
         if(!isValid(targetPos[0], targetPos[1])) {
-        	target.setDir(new int[] {-dir[0], -dir[1]});
+        	target.changeDir();
         }
         
         RPS i = itemAt(targetPos[0], targetPos[1], target);
@@ -112,7 +119,7 @@ public class GUI {
             
             target.setLocation(targetPos[0], targetPos[1]);
             target.setPos(targetPos);
-            target.randDir();
+            target.changeDir();
         } else {
             target.setLocation(targetPos[0], targetPos[1]);
             target.setPos(targetPos);
@@ -134,6 +141,10 @@ public class GUI {
             if(allSameType) {
             	winLabel.setText(type + " Wins!");
             	winLabel.setVisible(true);
+            	
+            	if(type.equals("rock")) {
+            		rockCounterImg.setIcon(counterOn);
+            	}
             }
             
             updateCounters();
@@ -160,12 +171,6 @@ public class GUI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// image initialization
-		ImageIcon startButton = new ImageIcon(getClass().getResource("/imgs/startButton.png"));
-		ImageIcon stopButton = new ImageIcon(getClass().getResource("/imgs/stopButton.png"));
-		ImageIcon controlBack = new ImageIcon(getClass().getResource("/imgs/ControlPanelBack.png"));
-		ImageIcon frameBack = new ImageIcon(getClass().getResource("/imgs/frameBack.png"));
 		
 		// FRAME 
 		frame = new JFrame("Rock Paper Scissors Simulator");
@@ -208,26 +213,31 @@ public class GUI {
         controlPanel.setBackground(new Color(45, 45, 45));
         controlPanel.setBounds(0,0,frame.getWidth(), 70);
         
+        
         // ---------- CONTROL PANEL COMPONENTS ---------------------------------------
+        // image for the control panel
+        controlPanelImg = new JLabel();
+        controlPanelImg.setIcon(controlBack);
+        controlPanelImg.setBounds(controlPanel.getX(), controlPanel.getY(), controlBack.getIconWidth(), controlBack.getIconHeight());
+        
         // slider that controls the tick speed of the simulation
         speedSlider = new JSlider(1, 99, 25);
         speedSlider.setBounds(330, controlPanel.getHeight()/2, 200, 30);
-        speedSlider.setBackground(controlPanel.getBackground());
+        speedSlider.setOpaque(false);
         speedSlider.setEnabled(false);
         
         // label showing the speed of the simulation in ticks per second
         speedLabel = new JLabel("Ticks per second");
+        speedLabel.setFont(video.deriveFont(19f));
         speedLabel.setBounds(speedSlider.getX()+5, controlPanel.getHeight()/2-25, 200, 30);
         speedLabel.setForeground(Color.white);
-        speedLabel.setFont(video.deriveFont(19f));
-        speedLabel.setEnabled(false);
+        
         // creates another loop of moving the objects when changing the tick speed
         speedSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e){
                 tps = speedSlider.getValue();
                 speedCounter.setText(""+tps);
-                System.out.println(tps);
                 if(timer != null) {
                 	timer.cancel();
                 }
@@ -248,7 +258,12 @@ public class GUI {
         speedCounter.setFont(board.deriveFont(20f));
         speedCounter.setForeground(Color.white);
         speedCounter.setHorizontalAlignment(SwingConstants.RIGHT);
-        speedCounter.setBounds(speedSlider.getX()-50, controlPanel.getHeight()/2-20, 40, 40);
+        speedCounter.setBounds(speedSlider.getX()-54, controlPanel.getHeight()/2-17, 40, 40);
+        
+        // background image for the speed counter
+        speedCounterImg = new JLabel();
+        speedCounterImg.setBounds(speedCounter.getX()+4, speedCounter.getY()-3, speedCounter.getWidth(), speedCounter.getHeight());
+        speedCounterImg.setIcon(new ImageIcon(counter.getImage().getScaledInstance(speedCounterImg.getWidth(), speedCounterImg.getHeight(), Image.SCALE_SMOOTH)));
         
         // shows number of rocks
         rockCounter = new JLabel("0");
@@ -256,6 +271,11 @@ public class GUI {
         rockCounter.setForeground(Color.white);
         rockCounter.setHorizontalAlignment(SwingConstants.RIGHT);
         rockCounter.setBounds(5, 140, 60, 40);
+        
+        // image for rock counter
+        rockCounterImg = new JLabel();
+        rockCounterImg.setBounds(rockCounter.getX()+4, rockCounter.getY()-35, rockCounter.getWidth(), rockCounter.getHeight()+30);
+        rockCounterImg.setIcon(new ImageIcon(counterOff.getImage().getScaledInstance(rockCounterImg.getWidth(), rockCounterImg.getHeight(), Image.SCALE_SMOOTH)));
         
         // shows number of papers
         paperCounter = new JLabel("0");
@@ -345,7 +365,6 @@ public class GUI {
                         item.setBounds(x,y, 20, 20);
                         items[(i*numEach)+ii] = item;
                         gamePane.add(item);
-                        System.out.println("Placed " + item.getType());
                     }
                 }
                 
@@ -372,10 +391,13 @@ public class GUI {
         controlPanel.add(speedSlider);
         controlPanel.add(speedLabel);
         controlPanel.add(speedCounter);
+        controlPanel.add(speedCounterImg);
         controlPanel.add(rockCounter);
+        controlPanel.add(rockCounterImg);
         controlPanel.add(paperCounter);
         controlPanel.add(scissorsCounter);
         controlPanel.add(pauseBtn);
+        controlPanel.add(controlPanelImg);
         
         // add panels to frame
         frame.add(startPanel);
