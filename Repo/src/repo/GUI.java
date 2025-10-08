@@ -22,9 +22,9 @@ public class GUI {
 	ImageIcon startButton = new ImageIcon(getClass().getResource("/imgs/startButton.png"));
 	ImageIcon stopButton = new ImageIcon(getClass().getResource("/imgs/stopButton.png"));
 	ImageIcon controlBack = new ImageIcon(getClass().getResource("/imgs/controlPanelBack.png"));
-	ImageIcon counterOff = new ImageIcon(getClass().getResource("/imgs/counterOff.png"));
-	ImageIcon counterOn = new ImageIcon(getClass().getResource("/imgs/counterOn.png"));
-	ImageIcon counter = new ImageIcon(getClass().getResource("/imgs/counter.png"));
+	ImageIcon counterOff = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counterOff.png")).getImage().getScaledInstance(60, 70, Image.SCALE_SMOOTH));
+	ImageIcon counterOn = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counterOn.png")).getImage().getScaledInstance(60, 70, Image.SCALE_SMOOTH));
+	ImageIcon counter = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counter.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
  		
     RPS[] items; // array to have all the rock paper and scissors objects in
     int tps; // ticks per second variable, saved to by numSlider
@@ -142,9 +142,12 @@ public class GUI {
             	winLabel.setText(type + " Wins!");
             	winLabel.setVisible(true);
             	
-            	if(type.equals("rock")) {
+            	if(type.equals("rock")) 
             		rockCounterImg.setIcon(counterOn);
-            	}
+            	else if (type.equals("paper")) 
+            		paperCounterImg.setIcon(counterOn);
+            	else
+            		scissorsCounterImg.setIcon(counterOn);
             }
             
             updateCounters();
@@ -263,7 +266,7 @@ public class GUI {
         // background image for the speed counter
         speedCounterImg = new JLabel();
         speedCounterImg.setBounds(speedCounter.getX()+4, speedCounter.getY()-3, speedCounter.getWidth(), speedCounter.getHeight());
-        speedCounterImg.setIcon(new ImageIcon(counter.getImage().getScaledInstance(speedCounterImg.getWidth(), speedCounterImg.getHeight(), Image.SCALE_SMOOTH)));
+        speedCounterImg.setIcon(counter);
         
         // shows number of rocks
         rockCounter = new JLabel("0");
@@ -275,7 +278,7 @@ public class GUI {
         // image for rock counter
         rockCounterImg = new JLabel();
         rockCounterImg.setBounds(rockCounter.getX()+4, rockCounter.getY()-35, rockCounter.getWidth(), rockCounter.getHeight()+30);
-        rockCounterImg.setIcon(new ImageIcon(counterOff.getImage().getScaledInstance(rockCounterImg.getWidth(), rockCounterImg.getHeight(), Image.SCALE_SMOOTH)));
+        rockCounterImg.setIcon(counterOff);
         
         // shows number of papers
         paperCounter = new JLabel("0");
@@ -284,12 +287,22 @@ public class GUI {
         paperCounter.setHorizontalAlignment(SwingConstants.RIGHT);
         paperCounter.setBounds(5, 280, 60, 40);
         
+        // image for paper counter
+        paperCounterImg = new JLabel();
+        paperCounterImg.setBounds(paperCounter.getX()+4, paperCounter.getY()-35, paperCounter.getWidth(), paperCounter.getHeight()+30);
+        paperCounterImg.setIcon(counterOff);
+        
         // shows number of scissors
         scissorsCounter = new JLabel("0");
         scissorsCounter.setFont(board.deriveFont(20f));
         scissorsCounter.setForeground(Color.white);
         scissorsCounter.setHorizontalAlignment(SwingConstants.RIGHT);
         scissorsCounter.setBounds(5, 420, 60, 40);
+        
+        // image for scissors counter
+        scissorsCounterImg = new JLabel();
+        scissorsCounterImg.setBounds(scissorsCounter.getX()+4, scissorsCounter.getY()-35, scissorsCounter.getWidth(), scissorsCounter.getHeight()+30);
+        scissorsCounterImg.setIcon(counterOff);
         
         // button to pause and resume the simulation
         pauseBtn = new JButton();
@@ -392,11 +405,18 @@ public class GUI {
         controlPanel.add(speedLabel);
         controlPanel.add(speedCounter);
         controlPanel.add(speedCounterImg);
+        
         controlPanel.add(rockCounter);
         controlPanel.add(rockCounterImg);
+        
         controlPanel.add(paperCounter);
+        controlPanel.add(paperCounterImg);
+        
         controlPanel.add(scissorsCounter);
+        controlPanel.add(scissorsCounterImg);
+        
         controlPanel.add(pauseBtn);
+        
         controlPanel.add(controlPanelImg);
         
         // add panels to frame
