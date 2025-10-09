@@ -13,7 +13,7 @@ import java.util.TimerTask;
 public class GUI {
 	JFrame frame;
     JLabel numLabel, speedLabel, winLabel,  speedCounter, rockCounter, paperCounter, scissorsCounter;
-    JLabel speedCounterImg, controlPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg;
+    JLabel speedCounterImg, controlPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg, rockLabel, paperLabel, scissorsLabel;
 	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
     JButton continueBtn, pauseBtn;
@@ -25,6 +25,10 @@ public class GUI {
 	ImageIcon counterOff = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counterOff.png")).getImage().getScaledInstance(60, 70, Image.SCALE_SMOOTH));
 	ImageIcon counterOn = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counterOn.png")).getImage().getScaledInstance(60, 70, Image.SCALE_SMOOTH));
 	ImageIcon counter = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counter.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+	ImageIcon speedLabelImg = new ImageIcon(getClass().getResource("/imgs/speedLabelImg.png"));
+	ImageIcon rockLabelImg = new ImageIcon(getClass().getResource("/imgs/rockLabel.png"));
+	ImageIcon paperLabelImg = new ImageIcon(getClass().getResource("/imgs/paperLabel.png"));
+	ImageIcon scissorsLabelImg = new ImageIcon(getClass().getResource("/imgs/scissorsLabel.png"));
  		
     RPS[] items; // array to have all the rock paper and scissors objects in
     int tps; // ticks per second variable, saved to by numSlider
@@ -232,10 +236,8 @@ public class GUI {
         speedSlider.setUI(new SliderUI(speedSlider));
         
         // label showing the speed of the simulation in ticks per second
-        speedLabel = new JLabel("Ticks per second");
-        speedLabel.setFont(video.deriveFont(19f));
+        speedLabel = new JLabel(speedLabelImg);
         speedLabel.setBounds(speedSlider.getX()+5, controlPanel.getHeight()/2-25, 200, 30);
-        speedLabel.setForeground(Color.white);
         speedSlider.setFocusable(false);
         
         
@@ -284,6 +286,10 @@ public class GUI {
         rockCounterImg.setBounds(rockCounter.getX()+4, rockCounter.getY()-35, rockCounter.getWidth(), rockCounter.getHeight()+30);
         rockCounterImg.setIcon(counterOff);
         
+        // rock label
+        rockLabel = new JLabel(rockLabelImg);
+        rockLabel.setBounds(rockCounter.getX()+10, rockCounter.getY()+40, rockLabelImg.getIconWidth(), rockLabelImg.getIconHeight());
+        
         // shows number of papers
         paperCounter = new JLabel("0");
         paperCounter.setFont(board.deriveFont(24f));
@@ -296,6 +302,10 @@ public class GUI {
         paperCounterImg.setBounds(paperCounter.getX()+4, paperCounter.getY()-35, paperCounter.getWidth(), paperCounter.getHeight()+30);
         paperCounterImg.setIcon(counterOff);
         
+        // paper label
+        paperLabel = new JLabel(paperLabelImg);
+        paperLabel.setBounds(paperCounter.getX()+5, paperCounter.getY()+40, paperLabelImg.getIconWidth(), paperLabelImg.getIconHeight());
+        
         // shows number of scissors
         scissorsCounter = new JLabel("0");
         scissorsCounter.setFont(board.deriveFont(24f));
@@ -307,6 +317,10 @@ public class GUI {
         scissorsCounterImg = new JLabel();
         scissorsCounterImg.setBounds(scissorsCounter.getX()+4, scissorsCounter.getY()-35, scissorsCounter.getWidth(), scissorsCounter.getHeight()+30);
         scissorsCounterImg.setIcon(counterOff);
+        
+        // scissors label
+        scissorsLabel = new JLabel(scissorsLabelImg);
+        scissorsLabel.setBounds(scissorsCounter.getX()+4, scissorsCounter.getY()+40, scissorsLabelImg.getIconWidth(), scissorsLabelImg.getIconHeight());
         
         // button to pause and resume the simulation
         pauseBtn = new JButton();
@@ -412,12 +426,15 @@ public class GUI {
         
         controlPanel.add(rockCounter);
         controlPanel.add(rockCounterImg);
+        controlPanel.add(rockLabel);
         
         controlPanel.add(paperCounter);
         controlPanel.add(paperCounterImg);
+        controlPanel.add(paperLabel);
         
         controlPanel.add(scissorsCounter);
         controlPanel.add(scissorsCounterImg);
+        controlPanel.add(scissorsLabel);
         
         controlPanel.add(pauseBtn);
         
