@@ -16,7 +16,7 @@ import java.util.TimerTask;
 public class GUI {
 	JFrame frame;
     JLabel numLabel, speedLabel, winLabel,  speedCounter, rockCounter, paperCounter, scissorsCounter;
-    JLabel speedCounterImg, controlPanelImg, startPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg, rockLabel, paperLabel, scissorsLabel, numImg;
+    JLabel speedCounterImg, controlPanelImg, startPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg, rockLabel, paperLabel, scissorsLabel, numImg, ventImg;
 	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
     JButton continueBtn, pauseBtn, resetBtn;
@@ -34,6 +34,12 @@ public class GUI {
 	ImageIcon scissorsLabelImg = new ImageIcon(getClass().getResource("/imgs/scissorsLabel.png"));
 	ImageIcon startPanelBack = new ImageIcon(getClass().getResource("/imgs/startPanelBack.png"));
 	ImageIcon frameBack = new ImageIcon(getClass().getResource("/imgs/frameBack.png"));
+	ImageIcon continueBtnImg = new ImageIcon(getClass().getResource("/imgs/continueButton.png"));
+	ImageIcon continueBtnImg2 = new ImageIcon(getClass().getResource("/imgs/continueButton2.png"));
+	ImageIcon resetButton = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/resetButtonClose.png")).getImage().getScaledInstance(25, 80, Image.SCALE_SMOOTH));
+	ImageIcon resetButton2 = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/resetButtonOpen.png")).getImage().getScaledInstance(25, 80, Image.SCALE_SMOOTH));
+	ImageIcon resetButton3 = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/resetButtonOn.png")).getImage().getScaledInstance(25, 80, Image.SCALE_SMOOTH));
+	ImageIcon vent = new ImageIcon(getClass().getResource("/imgs/vent.png"));
  		
     RPS[] items; // array to have all the rock paper and scissors objects in
     int tps; // ticks per second variable, saved to by numSlider
@@ -93,7 +99,10 @@ public class GUI {
         int[] targetPos = new int[] {pos[0]+(dir[0]*speed), pos[1]+(dir[1]*speed)};
         
         if(!isValid(targetPos[0], targetPos[1])) {
-        	target.changeDir();
+        	if(pos[0] <= RPS.RADIUS || pos[0] >= gamePane.getWidth()-RPS.DIAMETER)
+        		target.changeX();
+        	if(pos[1] <= RPS.RADIUS || pos[1] >= gamePane.getHeight()-RPS.DIAMETER)
+        		target.changeY();
         }
         
         RPS i = itemAt(targetPos[0], targetPos[1], target);
@@ -190,6 +199,7 @@ public class GUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setIconImage(frameBack.getImage());
 		frame.setSize(1000, 650);
+		frame.setBackground(Color.black);
 		
 		// panel that shows up at the start of the simulation
         startPanel = new JPanel();
@@ -218,25 +228,29 @@ public class GUI {
         });
         
         // Button to start program
-        continueBtn = new JButton("START");
-        continueBtn.setBounds(startPanel.getWidth()/2-90, startPanel.getHeight()/2+10, 180, 35);
+        continueBtn = new JButton(continueBtnImg);
+        continueBtn.setPressedIcon(continueBtnImg2);
+        continueBtn.setBounds(startPanel.getWidth()/2-90, startPanel.getHeight()/2+10, continueBtnImg.getIconWidth(), continueBtnImg.getIconHeight());
         continueBtn.setFont(video.deriveFont(20f));
+        continueBtn.setBorderPainted(false);
         
+        // label for the number of each object
         numLabel = new JLabel(""+numSlider.getValue());
-        numLabel.setBounds(startPanel.getWidth()/2-140, startPanel.getHeight()/2-50, 160, 70);
+        numLabel.setBounds(startPanel.getWidth()/2-185, startPanel.getHeight()/2-50, 80, 70);
+        numLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         numLabel.setFont(board.deriveFont(24f));
         numLabel.setForeground(Color.white);
         
         // background imgae for num label
         numImg = new JLabel(counter);
-        numImg.setBounds(numLabel.getX()-65, numLabel.getY()-3, numLabel.getWidth(), numLabel.getHeight());
+        numImg.setBounds(numLabel.getX()+21, numLabel.getY()-3, numLabel.getWidth(), numLabel.getHeight());
         
         // --------- START PANEL END ------------------------------------------
         
         // panel to put configuration controls on
         controlPanel = new JPanel();
         controlPanel.setLayout(null);
-        controlPanel.setOpaque(false);
+        controlPanel.setBackground(new Color(40, 40, 40));
         controlPanel.setBounds(0,0,frame.getWidth()-15, frame.getHeight());
         
         
@@ -358,6 +372,12 @@ public class GUI {
         			pauseBtn.setIcon(startButton);
         	}
         });
+        
+        // vent for looks
+        ventImg = new JLabel(new ImageIcon(vent.getImage().getScaledInstance(vent.getIconWidth()-20, vent.getIconHeight()-20, Image.SCALE_SMOOTH)));
+        ventImg.setBounds(625, -5, vent.getIconWidth(), vent.getIconHeight());
+        ventImg.setOpaque(false);
+        
         // ---------- CONTROL PANEL END -------------------------------------------
         
         // panel to put simulate the RPS objects on
@@ -367,8 +387,13 @@ public class GUI {
         gamePane.setBackground(new Color(20,20,20));
         gamePane.setEnabled(false);
         
-        resetBtn = new JButton("Reset");
-        resetBtn.setBounds(panelPosX+750, (controlPanel.getHeight()/2)-25, 75, 50);
+        resetBtn = new JButton(resetButton);
+        resetBtn.setBounds(920, -15, resetButton.getIconWidth(), resetButton.getIconHeight());
+        resetBtn.setPressedIcon(resetButton3);
+        resetBtn.setRolloverIcon(resetButton2);
+        resetBtn.setBorderPainted(false);
+        resetBtn.setFocusable(false);
+        resetBtn.setContentAreaFilled(false);
         resetBtn.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -469,6 +494,8 @@ public class GUI {
         controlPanel.add(scissorsLabel);
         
         controlPanel.add(pauseBtn);
+        
+        controlPanel.add(ventImg);
         
         controlPanel.add(controlPanelImg);
         

@@ -50,11 +50,18 @@ public class SliderUI extends BasicSliderUI {
 	public void paintTrack(Graphics g) {
 		File f = new File(getClass().getResource("/imgs/track.png").getPath());
 		Image i;
-		g.setColor(this.trackColor);
-			//i = ImageIO.read(f).getScaledInstance(trackRect.width, trackRect.height, Image.SCALE_SMOOTH);
-		g.drawLine(trackRect.x, trackRect.y+2+(trackRect.height/2), trackRect.x+(trackRect.width), trackRect.y+2+(trackRect.height/2));
-		g.drawLine(trackRect.x, trackRect.y+1+(trackRect.height/2), trackRect.x+(trackRect.width), trackRect.y+1+(trackRect.height/2));
-			//g.drawImage(i, trackRect.x, trackRect.y+2, null);
+		
+		try {
+			i = ImageIO.read(f).getScaledInstance(trackRect.width, trackRect.height, Image.SCALE_SMOOTH);
+			g.drawImage(i, trackRect.x, trackRect.y+2, null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		g.setColor(this.trackColor);
+//		g.drawLine(trackRect.x, trackRect.y+2+(trackRect.height/2), trackRect.x+(trackRect.width), trackRect.y+2+(trackRect.height/2));
+//		g.drawLine(trackRect.x, trackRect.y+1+(trackRect.height/2), trackRect.x+(trackRect.width), trackRect.y+1+(trackRect.height/2));
+			
 		
 	}
 }
