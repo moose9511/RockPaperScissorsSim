@@ -1,5 +1,8 @@
 package repo;
 import javax.swing.event.*;
+
+import repo.Main.resetObserver;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -16,7 +19,7 @@ public class GUI {
     JLabel speedCounterImg, controlPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg;
 	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
-    JButton continueBtn, pauseBtn;
+    JButton continueBtn, pauseBtn, resetBtn;
     
     // image initialization
 	ImageIcon startButton = new ImageIcon(getClass().getResource("/imgs/startButton.png"));
@@ -157,7 +160,7 @@ public class GUI {
     	}
     	speedSlider.repaint();
     }
-	public GUI() {
+	public GUI(resetObserver observer) {
 		// the x and y lengths from the frame width/height for startPanel and gamePane so they match up
 		int panelSizeX = 105;
 		int panelSizeY = 120;
@@ -192,10 +195,13 @@ public class GUI {
 		numSlider = new JSlider(1, 50, 25);
 		numSlider.setBounds(startPanel.getWidth()/2-100, startPanel.getHeight()/2, 200, 80);
 		numSlider.setBackground(Color.black);
+		numSlider.setUI(new SliderUI(numSlider, new Color(75, 75, 75)));
+		numSlider.setFocusable(false);
 		// Updates number of items showed to user
         numSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e){
+            	numSlider.repaint();
                 numLabel.setText(""+numSlider.getValue());
             }
         });
@@ -243,6 +249,7 @@ public class GUI {
         speedSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e){
+            	speedSlider.repaint();
                 tps = speedSlider.getValue();
                 speedCounter.setText(""+tps);
                 if(timer != null) {
@@ -334,6 +341,17 @@ public class GUI {
         gamePane.setBackground(new Color(20,20,20));
         gamePane.setEnabled(false);
         
+        resetBtn = new JButton("Reset");
+        resetBtn.setBounds(panelPosX+750, (controlPanel.getHeight()/2)-25, 75, 50);
+        resetBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		observer.onReset();
+        		frame.dispose();
+        	}
+        });
+        
+        
         // sets settings for win label
         winLabel = new JLabel();
         winLabel.setBounds(gamePane.getWidth()/2-200, gamePane.getHeight()/2-100, 400, 200);
@@ -409,6 +427,7 @@ public class GUI {
         controlPanel.add(speedLabel);
         controlPanel.add(speedCounter);
         controlPanel.add(speedCounterImg);
+        controlPanel.add(resetBtn);
         
         controlPanel.add(rockCounter);
         controlPanel.add(rockCounterImg);
