@@ -29,12 +29,11 @@ public class SliderUI extends BasicSliderUI {
 		super(b);
 	}
 	public void paintThumb(Graphics g) {
-		File f = new File(getClass().getResource("/imgs/knobplaceholder.png").getPath());
+		File f = new File(getClass().getResource("/imgs/knob.png").getPath());
 		Image i;
 		try {
 			i = ImageIO.read(f).getScaledInstance(thumbRect.width*2, thumbRect.height*2, Image.SCALE_SMOOTH);
 			g.drawImage(i, thumbRect.x, thumbRect.y-10, null);
-			
 		} catch (IOException e) {
 			System.out.print("Error loading image: ");
 			e.printStackTrace();

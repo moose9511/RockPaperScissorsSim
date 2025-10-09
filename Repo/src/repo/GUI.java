@@ -155,6 +155,7 @@ public class GUI {
             gamePane.revalidate();
             gamePane.repaint();
     	}
+    	speedSlider.repaint();
     }
 	public GUI() {
 		// the x and y lengths from the frame width/height for startPanel and gamePane so they match up
@@ -235,6 +236,8 @@ public class GUI {
         speedLabel.setFont(video.deriveFont(19f));
         speedLabel.setBounds(speedSlider.getX()+5, controlPanel.getHeight()/2-25, 200, 30);
         speedLabel.setForeground(Color.white);
+        speedSlider.setFocusable(false);
+        
         
         // creates another loop of moving the objects when changing the tick speed
         speedSlider.addChangeListener(new ChangeListener() {
@@ -271,7 +274,7 @@ public class GUI {
         
         // shows number of rocks
         rockCounter = new JLabel("0");
-        rockCounter.setFont(board.deriveFont(20f));
+        rockCounter.setFont(board.deriveFont(24f));
         rockCounter.setForeground(Color.white);
         rockCounter.setHorizontalAlignment(SwingConstants.RIGHT);
         rockCounter.setBounds(5, 140, 60, 40);
@@ -283,7 +286,7 @@ public class GUI {
         
         // shows number of papers
         paperCounter = new JLabel("0");
-        paperCounter.setFont(board.deriveFont(20f));
+        paperCounter.setFont(board.deriveFont(24f));
         paperCounter.setForeground(Color.white);
         paperCounter.setHorizontalAlignment(SwingConstants.RIGHT);
         paperCounter.setBounds(5, 280, 60, 40);
@@ -295,7 +298,7 @@ public class GUI {
         
         // shows number of scissors
         scissorsCounter = new JLabel("0");
-        scissorsCounter.setFont(board.deriveFont(20f));
+        scissorsCounter.setFont(board.deriveFont(24f));
         scissorsCounter.setForeground(Color.white);
         scissorsCounter.setHorizontalAlignment(SwingConstants.RIGHT);
         scissorsCounter.setBounds(5, 420, 60, 40);
