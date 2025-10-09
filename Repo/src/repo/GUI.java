@@ -16,7 +16,7 @@ import java.util.TimerTask;
 public class GUI {
 	JFrame frame;
     JLabel numLabel, speedLabel, winLabel,  speedCounter, rockCounter, paperCounter, scissorsCounter;
-    JLabel speedCounterImg, controlPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg, rockLabel, paperLabel, scissorsLabel;
+    JLabel speedCounterImg, controlPanelImg, startPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg, rockLabel, paperLabel, scissorsLabel, numImg;
 	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
     JButton continueBtn, pauseBtn, resetBtn;
@@ -27,11 +27,13 @@ public class GUI {
 	ImageIcon controlBack = new ImageIcon(getClass().getResource("/imgs/controlPanelBack.png"));
 	ImageIcon counterOff = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counterOff.png")).getImage().getScaledInstance(60, 70, Image.SCALE_SMOOTH));
 	ImageIcon counterOn = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counterOn.png")).getImage().getScaledInstance(60, 70, Image.SCALE_SMOOTH));
-	ImageIcon counter = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counter.png")).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH));
+	ImageIcon counter = new ImageIcon (new ImageIcon(getClass().getResource("/imgs/counter.png")).getImage().getScaledInstance(45, 40, Image.SCALE_SMOOTH));
 	ImageIcon speedLabelImg = new ImageIcon(getClass().getResource("/imgs/speedLabelImg.png"));
 	ImageIcon rockLabelImg = new ImageIcon(getClass().getResource("/imgs/rockLabel.png"));
 	ImageIcon paperLabelImg = new ImageIcon(getClass().getResource("/imgs/paperLabel.png"));
 	ImageIcon scissorsLabelImg = new ImageIcon(getClass().getResource("/imgs/scissorsLabel.png"));
+	ImageIcon startPanelBack = new ImageIcon(getClass().getResource("/imgs/startPanelBack.png"));
+	ImageIcon frameBack = new ImageIcon(getClass().getResource("/imgs/frameBack.png"));
  		
     RPS[] items; // array to have all the rock paper and scissors objects in
     int tps; // ticks per second variable, saved to by numSlider
@@ -186,6 +188,7 @@ public class GUI {
 		// FRAME 
 		frame = new JFrame("Rock Paper Scissors Simulator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setIconImage(frameBack.getImage());
 		frame.setSize(1000, 650);
 		
 		// panel that shows up at the start of the simulation
@@ -195,12 +198,16 @@ public class GUI {
         startPanel.setBackground(Color.black);
         
         // ------- START PANEL COMPONENTS --------------------------------------
+        // image for start panel
+        startPanelImg = new JLabel(new ImageIcon(startPanelBack.getImage().getScaledInstance(startPanel.getWidth(), startPanel.getHeight(), Image.SCALE_SMOOTH)));
+        startPanelImg.setBounds(0, 0, startPanel.getWidth(), startPanel.getHeight());
+        
 		// Number slider for amount of items
 		numSlider = new JSlider(1, 50, 25);
-		numSlider.setBounds(startPanel.getWidth()/2-100, startPanel.getHeight()/2, 200, 80);
-		numSlider.setBackground(Color.black);
+		numSlider.setBounds(startPanel.getWidth()/2-100, startPanel.getHeight()/2-60, 200, 80);
 		numSlider.setUI(new SliderUI(numSlider, new Color(75, 75, 75)));
 		numSlider.setFocusable(false);
+		numSlider.setOpaque(false);
 		// Updates number of items showed to user
         numSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -212,38 +219,43 @@ public class GUI {
         
         // Button to start program
         continueBtn = new JButton("START");
-        continueBtn.setBounds(startPanel.getWidth()/2-90, startPanel.getHeight()/2+100, 180, 35);
+        continueBtn.setBounds(startPanel.getWidth()/2-90, startPanel.getHeight()/2+10, 180, 35);
         continueBtn.setFont(video.deriveFont(20f));
         
         numLabel = new JLabel(""+numSlider.getValue());
-        numLabel.setBounds(startPanel.getWidth()/2-80, startPanel.getHeight()/2-50, 160, 70);
-        numLabel.setFont(board);
+        numLabel.setBounds(startPanel.getWidth()/2-140, startPanel.getHeight()/2-50, 160, 70);
+        numLabel.setFont(board.deriveFont(24f));
         numLabel.setForeground(Color.white);
+        
+        // background imgae for num label
+        numImg = new JLabel(counter);
+        numImg.setBounds(numLabel.getX()-65, numLabel.getY()-3, numLabel.getWidth(), numLabel.getHeight());
+        
         // --------- START PANEL END ------------------------------------------
         
         // panel to put configuration controls on
         controlPanel = new JPanel();
         controlPanel.setLayout(null);
-        controlPanel.setBackground(new Color(45, 45, 45));
-        controlPanel.setBounds(0,0,frame.getWidth(), 70);
+        controlPanel.setOpaque(false);
+        controlPanel.setBounds(0,0,frame.getWidth()-15, frame.getHeight());
         
         
         // ---------- CONTROL PANEL COMPONENTS ---------------------------------------
         // image for the control panel
         controlPanelImg = new JLabel();
-        controlPanelImg.setIcon(controlBack);
-        controlPanelImg.setBounds(controlPanel.getX(), controlPanel.getY(), controlBack.getIconWidth(), controlBack.getIconHeight());
+        controlPanelImg.setIcon(new ImageIcon(frameBack.getImage().getScaledInstance(controlPanel.getWidth(), controlPanel.getHeight(), Image.SCALE_SMOOTH)));
+        controlPanelImg.setBounds(0, 0, frame.getWidth(), frame.getHeight());
         
         // slider that controls the tick speed of the simulation
         speedSlider = new JSlider(1, 99, 25);
-        speedSlider.setBounds(330, controlPanel.getHeight()/2, 200, 30);
+        speedSlider.setBounds(330, 35, 200, 30);
         speedSlider.setOpaque(false);
         speedSlider.setEnabled(false);
         speedSlider.setUI(new SliderUI(speedSlider));
         
         // label showing the speed of the simulation in ticks per second
         speedLabel = new JLabel(speedLabelImg);
-        speedLabel.setBounds(speedSlider.getX()+5, controlPanel.getHeight()/2-25, 200, 30);
+        speedLabel.setBounds(speedSlider.getX()+5, 5, 200, 30);
         speedSlider.setFocusable(false);
         
         
@@ -271,14 +283,14 @@ public class GUI {
         
         // counter for the ticks per second slider
         speedCounter = new JLabel(""+speedSlider.getValue());
-        speedCounter.setFont(board.deriveFont(20f));
+        speedCounter.setFont(board.deriveFont(24f));
         speedCounter.setForeground(Color.white);
         speedCounter.setHorizontalAlignment(SwingConstants.RIGHT);
-        speedCounter.setBounds(speedSlider.getX()-54, controlPanel.getHeight()/2-17, 40, 40);
+        speedCounter.setBounds(speedSlider.getX()-60, 20, 50, 40);
         
         // background image for the speed counter
         speedCounterImg = new JLabel();
-        speedCounterImg.setBounds(speedCounter.getX()+4, speedCounter.getY()-3, speedCounter.getWidth(), speedCounter.getHeight());
+        speedCounterImg.setBounds(speedCounter.getX()+9, speedCounter.getY()-3, speedCounter.getWidth(), speedCounter.getHeight());
         speedCounterImg.setIcon(counter);
         
         // shows number of rocks
@@ -332,7 +344,7 @@ public class GUI {
         // button to pause and resume the simulation
         pauseBtn = new JButton();
         pauseBtn.setIcon(startButton);
-        pauseBtn.setBounds(panelPosX, (controlPanel.getHeight()/2)-25, startButton.getIconWidth(), startButton.getIconHeight());
+        pauseBtn.setBounds(panelPosX, 8, startButton.getIconWidth(), startButton.getIconHeight());
         pauseBtn.setBorderPainted(false);
         pauseBtn.setContentAreaFilled(false);
         pauseBtn.addActionListener(new ActionListener() {
@@ -432,8 +444,9 @@ public class GUI {
         startPanel.add(numSlider);
         startPanel.add(numLabel);
         startPanel.add(continueBtn);
+        startPanel.add(numImg);
+        startPanel.add(startPanelImg);
         
-        gamePane.setComponentZOrder(winLabel, 0);
         gamePane.add(winLabel);
         
         // add components to controlPanel
