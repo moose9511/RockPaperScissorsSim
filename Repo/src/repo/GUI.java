@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 public class GUI {
@@ -19,7 +20,7 @@ public class GUI {
     JLabel speedCounterImg, controlPanelImg, startPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg, rockLabel, paperLabel, scissorsLabel, numImg, ventImg;
 	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
-    JButton continueBtn, pauseBtn, resetBtn;
+    JButton continueBtn, pauseBtn, resetBtn, softReset;
     
     // image initialization
 	ImageIcon startButton = new ImageIcon(getClass().getResource("/imgs/startButton.png"));
@@ -402,6 +403,46 @@ public class GUI {
         	}
         });
         
+        softReset = new JButton("Soft Reset");
+        softReset.setBounds(815, 15, 100, 50);
+        softReset.setBorderPainted(false);
+        softReset.setFocusable(false);
+        softReset.setContentAreaFilled(false);
+        softReset.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		RPS[] newArr = new RPS[items.length];
+        		int numR = 0, numP = 0, numS = 0;
+        		for(int i = 0; i < items.length; i++) {
+        			RPS item = items[(int)Math.round(Math.random()*(items.length-1))];
+        			while(Arrays.asList(newArr).contains(item) || item == null) {
+        				item = items[(int)Math.round(Math.random()*(items.length-1))];
+        			}
+        			int typeInt = i / numSlider.getValue();
+    				if(typeInt < 1) {
+    					item.setType("rock");
+    					numR++;
+    				} else if (typeInt < 2) {
+    					item.setType("paper");
+    					numP++;
+    				} else {
+    					item.setType("scissors");
+    					numS++;
+    				}
+    				newArr[i] = item;
+        		}
+        		rockNum = numR;
+        		scissorsNum = numS;
+        		paperNum = numP;
+        		updateCounters();
+        		winLabel.setVisible(false);
+        		winLabel.setText("");
+        		rockCounterImg.setIcon(counterOff);
+        		scissorsCounterImg.setIcon(counterOff);
+        		paperCounterImg.setIcon(counterOff);
+        	}
+        });
+        controlPanel.add(softReset);
         
         // sets settings for win label
         winLabel = new JLabel();
