@@ -411,6 +411,7 @@ public class GUI {
         softReset.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
+        		paused = true;
         		RPS[] newArr = new RPS[items.length];
         		int numR = 0, numP = 0, numS = 0;
         		for(int i = 0; i < items.length; i++) {
@@ -440,6 +441,13 @@ public class GUI {
         		rockCounterImg.setIcon(counterOff);
         		scissorsCounterImg.setIcon(counterOff);
         		paperCounterImg.setIcon(counterOff);
+        		try {
+					Thread.sleep(5);
+					paused = false;
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
         	}
         });
         controlPanel.add(softReset);
