@@ -216,7 +216,7 @@ public class GUI {
 		// Number slider for amount of items
 		numSlider = new JSlider(1, 50, 25);
 		numSlider.setBounds(startPanel.getWidth()/2-100, startPanel.getHeight()/2-60, 200, 80);
-		numSlider.setUI(new SliderUI(numSlider, new Color(75, 75, 75)));
+		numSlider.setUI(new SliderUI(numSlider));
 		numSlider.setFocusable(false);
 		numSlider.setOpaque(false);
 		// Updates number of items showed to user
