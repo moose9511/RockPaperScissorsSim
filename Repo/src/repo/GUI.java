@@ -408,6 +408,7 @@ public class GUI {
         softReset.setBorderPainted(false);
         softReset.setFocusable(false);
         softReset.setContentAreaFilled(false);
+        softReset.setEnabled(false);
         softReset.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -475,6 +476,7 @@ public class GUI {
                 startPanel.setEnabled(false);
                 startPanel.setVisible(false);
                 gamePane.setEnabled(true);
+                softReset.setEnabled(true);
                 
                 // gets value from slider
                 int numEach = numSlider.getValue();
