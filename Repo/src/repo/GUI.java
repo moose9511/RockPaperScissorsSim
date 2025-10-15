@@ -415,6 +415,7 @@ public class GUI {
         softReset.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
+        		boolean initial = paused;
         		paused = true;
         		RPS[] newArr = new RPS[items.length];
         		int numR = 0, numP = 0, numS = 0;
@@ -447,7 +448,7 @@ public class GUI {
         		paperCounterImg.setIcon(counterOff);
         		try {
 					Thread.sleep(5);
-					paused = false;
+					paused = initial;
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
