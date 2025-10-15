@@ -16,7 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 public class GUI {
 	JFrame frame;
-    JLabel numLabel, speedLabel, winLabel,  speedCounter, rockCounter, paperCounter, scissorsCounter;
+    JLabel numLabel, speedLabel, winLabel,  speedCounter, rockCounter, paperCounter, scissorsCounter, guessLabel;
     JLabel speedCounterImg, controlPanelImg, startPanelImg, rockCounterImg, paperCounterImg, scissorsCounterImg, rockLabel, paperLabel, scissorsLabel, numImg, ventImg;
 	JPanel gamePane, startPanel, controlPanel;
 	JSlider numSlider, speedSlider;
@@ -43,12 +43,16 @@ public class GUI {
 	ImageIcon vent = new ImageIcon(getClass().getResource("/imgs/vent.png"));
 	ImageIcon shuffleBtn1 = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/shuffleButton1.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
 	ImageIcon shuffleBtn2 = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/shuffleButton2.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
+	ImageIcon rockPick = new ImageIcon((new ImageIcon(getClass().getResource("/imgs/rock.png"))).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+    ImageIcon paperPick = new ImageIcon((new ImageIcon(getClass().getResource("/imgs/paper.png"))).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+    ImageIcon scissorsPick = new ImageIcon((new ImageIcon(getClass().getResource("/imgs/scissors.png"))).getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH));	
  		
     RPS[] items; // array to have all the rock paper and scissors objects in
     int tps; // ticks per second variable, saved to by numSlider
     boolean paused; // used to check if the simulation should be paused
     Timer timer; // timer used to loop through frames in the simulation
     int rockNum, paperNum, scissorsNum; // ints to keep track of the number of each object
+    String userPick; // item the user guessed would win
     
     // adds to a specified type, removes changed type
     public void addToCounter(String type) {
@@ -161,6 +165,13 @@ public class GUI {
             if(allSameType) {
             	winLabel.setText(type + " Wins!");
             	winLabel.setVisible(true);
+            	guessLabel.setVisible(true);
+            	
+            	if (userPick.equals(type)) {
+            		guessLabel.setText("You guessed correct");
+            	} else if (!userPick.equals(type)) {
+            		guessLabel.setText("You guessed wrong");
+            	}
             	
             	if(type.equals("rock")) 
             		rockCounterImg.setIcon(counterOn);
@@ -232,7 +243,7 @@ public class GUI {
         // Button to start program
         continueBtn = new JButton(continueBtnImg);
         continueBtn.setPressedIcon(continueBtnImg2);
-        continueBtn.setBounds(startPanel.getWidth()/2-90, startPanel.getHeight()/2+10, continueBtnImg.getIconWidth(), continueBtnImg.getIconHeight());
+        continueBtn.setBounds(startPanel.getWidth()/2-90, startPanel.getHeight()/2+55, continueBtnImg.getIconWidth(), continueBtnImg.getIconHeight());
         continueBtn.setFont(video.deriveFont(20f));
         continueBtn.setBorderPainted(false);
         
@@ -246,6 +257,64 @@ public class GUI {
         // background imgae for num label
         numImg = new JLabel(counter);
         numImg.setBounds(numLabel.getX()+21, numLabel.getY()-3, numLabel.getWidth(), numLabel.getHeight());
+        
+        // Add RPS pick buttons to the start panel
+        JButton rockBtn = new JButton(rockPick);
+        rockBtn.setBounds(startPanel.getWidth()/2 - 150, startPanel.getHeight()/2 + 10, 40, 40);
+        rockBtn.setContentAreaFilled(false);
+        rockBtn.setBorderPainted(false);
+
+        JButton paperBtn = new JButton(paperPick);
+        paperBtn.setBounds(startPanel.getWidth()/2 - 20, startPanel.getHeight()/2 + 10, 40, 40);
+        paperBtn.setContentAreaFilled(false);
+        paperBtn.setBorderPainted(false);
+
+        JButton scissorsBtn = new JButton(scissorsPick);
+        scissorsBtn.setBounds(startPanel.getWidth()/2 + 110, startPanel.getHeight()/2 + 10, 40, 40);
+        scissorsBtn.setContentAreaFilled(false);
+        scissorsBtn.setBorderPainted(false);
+        
+        // Action Listeners
+        rockBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            		
+            		userPick = "rock";
+                System.out.println("User Picked " + userPick);
+                // Example: visually indicate selection
+                rockBtn.setBorderPainted(true);
+                rockBtn.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+                paperBtn.setBorderPainted(false);
+                scissorsBtn.setBorderPainted(false);
+                // TODO: store player's choice in a variable, e.g., playerChoice = "rock";
+            }
+        });
+
+        paperBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            		userPick = "paper";
+            		System.out.println("User Picked " + userPick);
+                paperBtn.setBorderPainted(true);
+                paperBtn.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+                rockBtn.setBorderPainted(false);
+                scissorsBtn.setBorderPainted(false);
+                // TODO: playerChoice = "paper";
+            }
+        });
+
+        scissorsBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            		userPick = "scissors";
+            		System.out.println("User Picked " + userPick);
+                scissorsBtn.setBorderPainted(true);
+                scissorsBtn.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+                rockBtn.setBorderPainted(false);
+                paperBtn.setBorderPainted(false);
+                // TODO: playerChoice = "scissors";
+            }
+        });
         
         // --------- START PANEL END ------------------------------------------
         
@@ -380,36 +449,14 @@ public class GUI {
         ventImg.setBounds(660, -5, vent.getIconWidth(), vent.getIconHeight());
         ventImg.setOpaque(false);
         
-        // ---------- CONTROL PANEL END -------------------------------------------
-        
-        // panel to put simulate the RPS objects on
-        gamePane = new JPanel();
-        gamePane.setLayout(null);
-        gamePane.setBounds(panelPosX, panelPosY, frame.getWidth()-panelSizeX, frame.getHeight()-panelSizeY);
-        gamePane.setBackground(new Color(20,20,20));
-        gamePane.setEnabled(false);
-        
-        resetBtn = new JButton(resetButton);
-        resetBtn.setBounds(920, -15, resetButton.getIconWidth(), resetButton.getIconHeight());
-        resetBtn.setPressedIcon(resetButton3);
-        resetBtn.setRolloverIcon(resetButton2);
-        resetBtn.setBorderPainted(false);
-        resetBtn.setFocusable(false);
-        resetBtn.setContentAreaFilled(false);
-        resetBtn.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) {
-        		observer.onReset();
-        		frame.dispose();
-        	}
-        });
-        
+        // basically a shuffle button to randomize the current items into equal amounts
         softReset = new JButton(shuffleBtn1);
         softReset.setPressedIcon(shuffleBtn2);
         softReset.setBounds(550, 5, shuffleBtn1.getIconWidth(), shuffleBtn1.getIconHeight());
         softReset.setBorderPainted(false);
         softReset.setFocusable(false);
         softReset.setContentAreaFilled(false);
+        softReset.setDisabledIcon(shuffleBtn1);
         softReset.setEnabled(false);
         softReset.addActionListener(new ActionListener() {
         	@Override
@@ -439,12 +486,18 @@ public class GUI {
         		rockNum = numR;
         		scissorsNum = numS;
         		paperNum = numP;
+        		
         		updateCounters();
+        		
+        		guessLabel.setVisible(false);
         		winLabel.setVisible(false);
         		winLabel.setText("");
+        		winLabel.setText("");
+        		
         		rockCounterImg.setIcon(counterOff);
         		scissorsCounterImg.setIcon(counterOff);
         		paperCounterImg.setIcon(counterOff);
+        		
         		try {
 					Thread.sleep(5);
 					paused = initial;
@@ -454,7 +507,40 @@ public class GUI {
 				}
         	}
         });
-        controlPanel.add(softReset);
+        
+        // reset button to close and re open the GUI class
+        resetBtn = new JButton(resetButton);
+        resetBtn.setBounds(920, -15, resetButton.getIconWidth(), resetButton.getIconHeight());
+        resetBtn.setPressedIcon(resetButton3);
+        resetBtn.setRolloverIcon(resetButton2);
+        resetBtn.setBorderPainted(false);
+        resetBtn.setFocusable(false);
+        resetBtn.setContentAreaFilled(false);
+        resetBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		observer.onReset();
+        		frame.dispose();
+        	}
+        });
+        // ---------- CONTROL PANEL END -------------------------------------------
+        
+        // panel to put simulate the RPS objects on
+        gamePane = new JPanel();
+        gamePane.setLayout(null);
+        gamePane.setBounds(panelPosX, panelPosY, frame.getWidth()-panelSizeX, frame.getHeight()-panelSizeY);
+        gamePane.setBackground(new Color(20,20,20));
+        gamePane.setEnabled(false);
+        
+        // -----------------GAME PANE START------------------------
+        //sets settings for guess Label
+        guessLabel = new JLabel();
+        guessLabel.setBounds(gamePane.getWidth()/2-200, gamePane.getHeight()/2-70, 400, 200);
+        guessLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        guessLabel.setVerticalAlignment(SwingConstants.CENTER);
+        guessLabel.setFont(video.deriveFont(30f));
+        guessLabel.setForeground(Color.white);
+        guessLabel.setVisible(false);
         
         // sets settings for win label
         winLabel = new JLabel();
@@ -464,6 +550,7 @@ public class GUI {
         winLabel.setFont(video.deriveFont(30f));
         winLabel.setForeground(Color.white);
         winLabel.setVisible(false);
+        // ----------------GAME PANE END------------------------
         
         // continues to program
         continueBtn.addActionListener(new ActionListener(){
@@ -524,8 +611,14 @@ public class GUI {
         startPanel.add(numLabel);
         startPanel.add(continueBtn);
         startPanel.add(numImg);
+        
+        startPanel.add(rockBtn);
+        startPanel.add(paperBtn);
+        startPanel.add(scissorsBtn);
+        
         startPanel.add(startPanelImg);
         
+        gamePane.add(guessLabel);
         gamePane.add(winLabel);
         
         // add components to controlPanel
@@ -546,6 +639,8 @@ public class GUI {
         controlPanel.add(scissorsCounter);
         controlPanel.add(scissorsCounterImg);
         controlPanel.add(scissorsLabel);
+        
+        controlPanel.add(softReset);
         
         controlPanel.add(pauseBtn);
         
