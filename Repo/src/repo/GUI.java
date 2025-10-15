@@ -95,7 +95,6 @@ public class GUI {
 
     // moves an item to a desired position based on it's direction and speed
     public void move(RPS target){
-    	tps = 30;
         int[] dir = target.getDir();
         int[] pos = target.getPos();
         int speed = 5;
@@ -104,7 +103,7 @@ public class GUI {
         if(!isValid(targetPos[0], targetPos[1])) {
         	if(pos[0] <= RPS.RADIUS || pos[0] >= gamePane.getWidth()-RPS.DIAMETER)
         		target.changeX();
-        	if(pos[1] <= RPS.RADIUS || pos[1] >= gamePane.getHeight()-RPS.DIAMETER)
+        	if (pos[1] <= RPS.RADIUS || pos[1] >= gamePane.getHeight()-RPS.DIAMETER)
         		target.changeY();
         }
         
