@@ -41,6 +41,8 @@ public class GUI {
 	ImageIcon resetButton2 = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/resetButtonOpen.png")).getImage().getScaledInstance(25, 80, Image.SCALE_SMOOTH));
 	ImageIcon resetButton3 = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/resetButtonOn.png")).getImage().getScaledInstance(25, 80, Image.SCALE_SMOOTH));
 	ImageIcon vent = new ImageIcon(getClass().getResource("/imgs/vent.png"));
+	ImageIcon shuffleBtn1 = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/shuffleButton1.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
+	ImageIcon shuffleBtn2 = new ImageIcon(new ImageIcon(getClass().getResource("/imgs/shuffleButton2.png")).getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH));
  		
     RPS[] items; // array to have all the rock paper and scissors objects in
     int tps; // ticks per second variable, saved to by numSlider
@@ -376,7 +378,7 @@ public class GUI {
         
         // vent for looks
         ventImg = new JLabel(new ImageIcon(vent.getImage().getScaledInstance(vent.getIconWidth()-20, vent.getIconHeight()-20, Image.SCALE_SMOOTH)));
-        ventImg.setBounds(625, -5, vent.getIconWidth(), vent.getIconHeight());
+        ventImg.setBounds(660, -5, vent.getIconWidth(), vent.getIconHeight());
         ventImg.setOpaque(false);
         
         // ---------- CONTROL PANEL END -------------------------------------------
@@ -403,8 +405,9 @@ public class GUI {
         	}
         });
         
-        softReset = new JButton("Soft Reset");
-        softReset.setBounds(815, 15, 100, 50);
+        softReset = new JButton(shuffleBtn1);
+        softReset.setPressedIcon(shuffleBtn2);
+        softReset.setBounds(550, 5, shuffleBtn1.getIconWidth(), shuffleBtn1.getIconHeight());
         softReset.setBorderPainted(false);
         softReset.setFocusable(false);
         softReset.setContentAreaFilled(false);
