@@ -1,21 +1,15 @@
 package repo;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.FocusEvent;
-import java.awt.event.MouseEvent;
+
 import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+
 import javax.swing.plaf.basic.BasicSliderUI;
 
 public class SliderUI extends BasicSliderUI {

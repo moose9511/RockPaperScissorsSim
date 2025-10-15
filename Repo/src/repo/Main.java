@@ -1,5 +1,5 @@
 package repo;
-
+@SuppressWarnings("unused")
 public class Main {
 	public static class resetObserver {
 		public void onReset() {
@@ -7,6 +7,7 @@ public class Main {
 		}
 	}
 	public static void main(String[] args) {
+		
 		GUI g = new GUI(new resetObserver());
 	}
 

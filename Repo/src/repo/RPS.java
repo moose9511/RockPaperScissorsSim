@@ -1,13 +1,13 @@
 package repo;
 
-import java.awt.Component;
-import java.awt.Graphics;
+
 import java.awt.Image;
-import javax.swing.Icon;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class RPS extends JLabel {
+
 	public static final int RADIUS = 20; // radius of the circular hit box
 	public static final int DIAMETER = RADIUS*2; // diameter of the circular hit box
 	private String type; // name of the object
@@ -41,12 +41,6 @@ public class RPS extends JLabel {
 	}
 	
 	// get methods
-	public int getX() {
-		return xPos;
-	}
-	public int getY() {
-		return yPos;
-	}
  	public int[] getPos() {
 		return new int[] {xPos, yPos};
 	}
@@ -79,12 +73,7 @@ public class RPS extends JLabel {
     public void setDir(int[] d) {
 		direction = d;
 	}
-    public void setX(int num){
-        xPos = num;
-    }
-    public void setY(int num){
-        yPos = num;
-    }
+    
     public void setPos(int[] pos) {
     	xPos = pos[0];
     	yPos = pos[1];
