@@ -52,7 +52,7 @@ public class GUI {
     boolean paused; // used to check if the simulation should be paused
     Timer timer; // timer used to loop through frames in the simulation
     int rockNum, paperNum, scissorsNum; // ints to keep track of the number of each object
-    String userPick; // item the user guessed would win
+    String userPick = ""; // item the user guessed would win
     
     // adds to a specified type, removes changed type
     public void addToCounter(String type) {
@@ -167,11 +167,13 @@ public class GUI {
             	winLabel.setVisible(true);
             	guessLabel.setVisible(true);
             	
-            	if (userPick.equals(type)) {
+            	if(userPick.equals("")) {
+            		guessLabel.setVisible(false);
+            	} else if (userPick.equals(type)) {
             		guessLabel.setText("You guessed correct");
-            	} else if (!userPick.equals(type)) {
+            	} else {
             		guessLabel.setText("You guessed wrong");
-            	}
+            	} 
             	
             	if(type.equals("rock")) 
             		rockCounterImg.setIcon(counterOn);
